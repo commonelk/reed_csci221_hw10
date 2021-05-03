@@ -51,18 +51,17 @@ void Deme::compute_next_generation() {
     const int pop_size = pop_.size(); // We will be changing pop_ over each iteration.
 
     // Get pairs of parents
-    for(unsigned int i = 0; i < pop_size; i++) {
-        Chromosome* parent1;
-        Chromosome* parent2;
-        for(unsigned int j = 0; i < 2; i++) {
-            parent1 = select_parent();
-            auto parent1_iter = std::find(pop_.begin(), pop_.end(), parent1);
-            pop_.erase(parent1_iter); // Erases but does not delete
-            parent2 = select_parent();
-            auto parent2_iter = std::find(pop_.begin(), pop_.end(), parent2);
-            pop_.erase(parent2_iter);
+    //Chromosome* parent;
+    chrom_pair_t parent_pair;
+    for(unsigned int i = 0; i < pop_size/2; i++) {
+        for(unsigned int j = 0; j < 2; j++) {
+            auto parent = select_parent();
+            auto parent_iter = std:;find(pop_.begin(), pop_.end(), parent);
+            pop_.erase(parent_iter);
+            if(j == 0) { parent_pair.first = parent; }
+            else if(j == 1) { parent_pair.second = parent; }
         }
-        parent_pairs.push_back(std::make_pair(parent1, parent2));
+        parent_pairs.push_back(parent_pair);
     }
 
     // Randomly mutate parents based on mut_rate_
