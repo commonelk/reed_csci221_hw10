@@ -45,5 +45,4 @@ class Deme {
         double mut_rate_;  // Mutation rate (fraction in range [0,1])
 
         std::default_random_engine generator_; // A random number generator for the various methods
-        std::uniform_real_distribution<double> distr(0.0, std::nextafter(1.0, DBL_MAX));
     };
