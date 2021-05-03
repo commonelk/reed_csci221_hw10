@@ -51,9 +51,8 @@ void Deme::compute_next_generation() {
     const int pop_size = pop_.size(); // We will be changing pop_ over each iteration.
 
     // Get pairs of parents
-    //Chromosome* parent;
     chrom_pair_t parent_pair;
-    for(unsigned int i = 0; i < pop_size/2; i++) {
+    for(int i = 0; i < pop_size/2; i++) {
         for(unsigned int j = 0; j < 2; j++) {
             auto parent = select_parent();
             auto parent_iter = std::find(pop_.begin(), pop_.end(), parent);
@@ -73,7 +72,7 @@ void Deme::compute_next_generation() {
     }
 
     // Generate new children and create new pop_
-    clean_pop(); // Cleans out any remaining chromosomes that weren't selected as parents (if pop_size is odd)
+    clean_pop(); // Cleans out any remaining chromosomes that weren't selected as parents (happens if pop_size is odd)
     for(chrom_pair_t parent_pair : parent_pairs) {
         auto child_pair = parent_pair.first -> recombine(parent_pair.second);
         pop_.push_back(child_pair.first);
@@ -107,4 +106,6 @@ Chromosome* Deme::select_parent() {
         partial_sum += chrom -> get_fitness();
         if(r < partial_sum) { return chrom; }
     }
+    // Maybe throw error here???? **************************************************************************
+    return nullptr; // Should never return nullptr, but if so... there's an issue...
 }
