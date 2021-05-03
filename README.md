@@ -8,7 +8,7 @@
     + Adjust `NUM_ITER` in `tsp.cc` as desired.
 + To use, execute `./tsp <filename> <population size> <mutation rate>` command.
 
-#### **Design Decisions (Brief):**
+#### **Design Decisions:**
 1. <u>Chromosome class.</u>
     + Type here.
 2. <u>Deme class.</u>
