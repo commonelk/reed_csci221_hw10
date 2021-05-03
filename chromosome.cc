@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cassert>
 #include <random>
+#include <limits>
 
 #include "chromosome.hh"
 
@@ -30,7 +31,16 @@ Chromosome::~Chromosome()
 void
 Chromosome::mutate()
 {
-  // Add your implementation here
+  //vector swap_order = Cities::random_permutation(order_.size()); //Randomly generates a permutation of cities, then takes the first two, to be used as teh indecies that will be swapped. Slow.
+  unsigned size = cities_ptr_->size() - 1; //Stores the size of the cities object, minus 1.
+
+  int a = gen(0, size); //Randomly chooses two *unique* values. This seems like it'd *almost* always be faster than random_permutation.
+  int b = gen(0, size);
+  while (a == b){
+    int b = gen(0, size);
+  }
+
+  iter_swap(order_.begin() + a, order_.begin() + b); //Swaps the values in the indecies from the previous step.
 
   assert(is_valid());
 }
@@ -84,7 +94,7 @@ Chromosome::create_crossover_child(const Chromosome* p1, const Chromosome* p2,
 double
 Chromosome::get_fitness() const
 {
-  // Add your implementation here
+  return std::numeric_limits<double>::max() - calculate_total_distance(); //Fitness = max double - total length. I'm not 100% confident in this one.
 }
 
 // A chromsome is valid if it has no repeated values in its permutation,
@@ -93,7 +103,15 @@ Chromosome::get_fitness() const
 bool
 Chromosome::is_valid() const
 {
-  // Add your implementation here
+  int length = order_.size();
+  auto it = max_element(std::begin(cloud), std::end(cloud));
+  if (it > length){ return 0 }; //Check if there are any values above the length of the chromosome bby comparing the highest value to the length
+
+  for (i = 0, i != length, i++){
+    if (std::count(order_.begin(), order_.end(), i) != 1) { //Check if there are any missing/repeated values
+      return 0;
+    }
+  }
 }
 
 // Find whether a certain value appears in a given range of the chromosome.
@@ -104,3 +122,7 @@ Chromosome::is_in_range(unsigned value, unsigned begin, unsigned end) const
 {
   // Add your implementation here
 }
+
+
+//Picks a number between a min and max
+std::uniform_int_distribution<int> gen(min, max);
