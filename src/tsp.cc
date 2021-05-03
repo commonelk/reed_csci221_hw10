@@ -4,8 +4,8 @@
  * of several solver algorithms on it and output the best result.
  */
 
-#include "cities.hh"
-#include "deme.hh"
+#include "../inc/cities.hh"
+#include "../inc/deme.hh"
 
 #include <algorithm>
 #include <cassert>

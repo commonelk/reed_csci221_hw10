@@ -3,8 +3,8 @@
  * travelling-salesperson problem.  A deme is a population of individuals.
  */
 
-#include "chromosome.hh"
-#include "deme.hh"
+#include "../inc/chromosome.hh"
+#include "../inc/deme.hh"
 
 #include <stdexcept>
 #include <cmath>

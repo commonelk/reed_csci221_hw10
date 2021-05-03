@@ -2,12 +2,14 @@
  * Implementation for Travelling-Salesperson Cities class and utilities
  */
 
+#include "../inc/cities.hh"
+
 #include <algorithm>
 #include <fstream>
 #include <numeric>
 #include <random>
 
-#include "cities.hh"
+
 
 
 //////////////////////////////////////////////////////////////////////////////

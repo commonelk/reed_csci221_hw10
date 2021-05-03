@@ -7,7 +7,7 @@
 #include <random>
 #include <limits>
 
-#include "chromosome.hh"
+#include "../inc/chromosome.hh"
 
 //////////////////////////////////////////////////////////////////////////////
 // Generate a completely random permutation from a list of cities

@@ -3,7 +3,9 @@ CXXFLAGS=-Wall -Wextra -pedantic -std=c++17 -O0 -g
 LDFLAGS=$(CXXFLAGS)
 OBJ=$(SRC:.cc=.o)
 
-all:  tsp
+VPATH=src:inc
+
+all: tsp
 
 chrm_comp_test: chromosome.o
 	$(CXX) $(LDFLAGS) -o $@ $^
