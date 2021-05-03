@@ -84,4 +84,6 @@ class Chromosome {
   Cities::permutation_t order_;  // The actual permutation of this chromosome
 
   std::default_random_engine generator_; // A random number generator for the various methods
+
+  std::pair<int, int> two_random_cities(); //Helper function that finds two unique random cities.
 };

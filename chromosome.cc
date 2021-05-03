@@ -33,15 +33,9 @@ Chromosome::mutate()
 {
   //vector swap_order = Cities::random_permutation(order_.size()); //Randomly generates a permutation of cities, then takes the first two, to be used as teh indecies that will be swapped. Slow.
 
-  std::uniform_int_distribution<int> gen(0, cities_ptr_->size() - 1); //Should this have the static keyword?
+  std::pair<int, int> unique_cities = Chromosome::two_random_cities();
 
-  int a = gen(generator_); //Randomly chooses two *unique* values. This seems like it'd *almost* always be faster than random_permutation.
-  int b = gen(generator_);
-  while (a == b){
-    int b = gen(generator_);
-  }
-
-  iter_swap(order_.begin() + a, order_.begin() + b); //Swaps the values in the indecies from the previous step.
+  std::iter_swap(order_.begin() + unique_cities.first, order_.begin() + unique_cities.second); //Swaps the values in the indecies from the previous step.
 
   assert(is_valid());
 }
@@ -55,7 +49,13 @@ Chromosome::recombine(const Chromosome* other)
   assert(is_valid());
   assert(other->is_valid());
 
-  // Add your implementation here
+  std::pair<Chromosome*, Chromosome*> pair;
+  std::pair<int, int> range = Chromosome::two_random_cities();
+
+  pair.first = Chromosome::create_crossover_child(this, other, range.first, range.second);
+  pair.second = Chromosome::create_crossover_child(other, this, range.first, range.second);
+  return pair;
+
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -104,13 +104,13 @@ Chromosome::get_fitness() const
 bool
 Chromosome::is_valid() const
 {
-  int length = order_.size();
+  unsigned length = order_.size();
   auto highest = std::max_element(order_.begin(), order_.end()); //Highest == iterator pointing to highest value in order_.
   if (*highest > length){
     return 0;
   } //Check if there are any values above the length of the chromosome by comparing the highest value to the length
 
-  for (int i = 0; i != length; i++){
+  for (unsigned i = 0; i != length; i++){
     if (std::count(order_.begin(), order_.end(), i) != 1) { //Check if there are any missing/repeated values
       return 0;
     }
@@ -124,5 +124,21 @@ Chromosome::is_valid() const
 bool
 Chromosome::is_in_range(unsigned value, unsigned begin, unsigned end) const
 {
-  // Add your implementation here
+  //std::ranges::any_of(order_[begin], order_[end], value); // I think this'd work, but I haven't tried it.
+  for(unsigned int i = begin; i < end; i++) {
+    if(value == order_[i]) { return true; }
+  }
+  return false;
+}
+
+// Returns a pair containing two unique numbers between 0 and number of cities -1.
+std::pair<int, int>
+Chromosome::two_random_cities()
+{
+  std::uniform_int_distribution<int> gen(0, cities_ptr_->size() - 1); //Should this have the static keyword?
+
+  int a = gen(generator_); //Randomly chooses two *unique* values. This seems like it'd *almost* always be faster than random_permutation.
+  int b = gen(generator_);
+  while (a == b){ b = gen(generator_); }
+  return std::pair<int, int> (a, b);
 }
