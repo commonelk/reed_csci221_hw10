@@ -7,37 +7,43 @@
 
 #include "chromosome.hh"
 #include "cities.hh"
-
+#include <cmath>
+#include <cfloat>
 #include <random>
 
 class Deme {
- public:
-  // Generate a Deme of the specified size with all-random chromosomes.
-  // Also receives a mutation rate in the range [0-1].
-  Deme(const Cities* cities_ptr, unsigned pop_size, double mut_rate);
+    public:
 
-  // Clean up as necessary
-  virtual ~Deme();
+        // Generate a Deme of the specified size with all-random chromosomes.
+        // Also receives a mutation rate in the range [0-1].
+        Deme(const Cities* cities_ptr, unsigned pop_size, double mut_rate);
 
-  // Evolve a single generation of new chromosomes, as follows:
-  // We select pop_size/2 pairs of chromosomes (using the select() method below).
-  // Each chromosome in the pair can be randomly selected for mutation, with
-  // probability mut_rate, in which case it calls the chromosome mutate() method.
-  // Then, the pair is recombined once (using the recombine() method) to generate
-  // a new pair of chromosomes, which are stored in the Deme.
-  // After we've generated pop_size new chromosomes, we delete all the old ones.
-  virtual void compute_next_generation();
+        // Clean up as necessary
+        virtual ~Deme();
 
-  // Return a pointer to the chromosome with the highest fitness.
-  const Chromosome* get_best() const;
+        // Evolve a single generation of new chromosomes, as follows:
+        // We select pop_size/2 pairs of chromosomes (using the select() method below).
+        // Each chromosome in the pair can be randomly selected for mutation, with
+        // probability mut_rate, in which case it calls the chromosome mutate() method.
+        // Then, the pair is recombined once (using the recombine() method) to generate
+        // a new pair of chromosomes, which are stored in the Deme.
+        // After we've generated pop_size new chromosomes, we delete all the old ones.
+        virtual void compute_next_generation();
 
- protected:
-  // Randomly select a chromosome in the population based on fitness and
-  // return a pointer to that chromosome.
-  virtual Chromosome* select_parent();
+        // Return a pointer to the chromosome with the highest fitness.
+        const Chromosome* get_best() const;
 
-  std::vector<Chromosome*> pop_;  // Population of Chromosomes
-  double mut_rate_;  // Mutation rate (fraction in range [0,1])
+    protected:
+        // Randomly select a chromosome in the population based on fitness and
+        // return a pointer to that chromosome.
+        virtual Chromosome* select_parent();
 
-  std::default_random_engine generator_; // A random number generator for the various methods
-};
+        // Helper function that deletes all Chromosome* in pop_ and clears pop_ (used in destructor)
+        virtual void clean_pop();
+
+        std::vector<Chromosome*> pop_;  // Population of Chromosomes
+        double mut_rate_;  // Mutation rate (fraction in range [0,1])
+
+        std::default_random_engine generator_; // A random number generator for the various methods
+        std::uniform_real_distribution<double> distr(0.0, std::nextafter(1.0, DBL_MAX));
+    };
