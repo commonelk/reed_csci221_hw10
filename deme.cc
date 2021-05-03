@@ -56,7 +56,7 @@ void Deme::compute_next_generation() {
     for(unsigned int i = 0; i < pop_size/2; i++) {
         for(unsigned int j = 0; j < 2; j++) {
             auto parent = select_parent();
-            auto parent_iter = std:;find(pop_.begin(), pop_.end(), parent);
+            auto parent_iter = std::find(pop_.begin(), pop_.end(), parent);
             pop_.erase(parent_iter);
             if(j == 0) { parent_pair.first = parent; }
             else if(j == 1) { parent_pair.second = parent; }
