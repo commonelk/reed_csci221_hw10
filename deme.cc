@@ -6,6 +6,7 @@
 #include "chromosome.hh"
 #include "deme.hh"
 
+#include <stdexcept>
 #include <cmath>
 #include <cfloat>
 #include <algorithm>
@@ -106,6 +107,6 @@ Chromosome* Deme::select_parent() {
         partial_sum += chrom -> get_fitness();
         if(r < partial_sum) { return chrom; }
     }
-    // Maybe throw error here???? **************************************************************************
-    return nullptr; // Should never return nullptr, but if so... there's an issue...
+    throw std::logic_error("Something went horribly wrong... Chromosome fitness too high?");
+    return nullptr; // Program should never reach here. In theory, the method should exit with the "return chrom;" statement.
 }
