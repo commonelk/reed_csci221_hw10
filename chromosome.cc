@@ -32,12 +32,13 @@ void
 Chromosome::mutate()
 {
   //vector swap_order = Cities::random_permutation(order_.size()); //Randomly generates a permutation of cities, then takes the first two, to be used as teh indecies that will be swapped. Slow.
-  unsigned size = cities_ptr_->size() - 1; //Stores the size of the cities object, minus 1.
 
-  int a = gen(0, size); //Randomly chooses two *unique* values. This seems like it'd *almost* always be faster than random_permutation.
-  int b = gen(0, size);
+  std::uniform_int_distribution<int> gen(0, cities_ptr_->size() - 1); //Should this have the static keyword?
+
+  int a = gen(generator_); //Randomly chooses two *unique* values. This seems like it'd *almost* always be faster than random_permutation.
+  int b = gen(generator_);
   while (a == b){
-    int b = gen(0, size);
+    int b = gen(generator_);
   }
 
   iter_swap(order_.begin() + a, order_.begin() + b); //Swaps the values in the indecies from the previous step.
@@ -104,14 +105,17 @@ bool
 Chromosome::is_valid() const
 {
   int length = order_.size();
-  auto it = max_element(std::begin(cloud), std::end(cloud));
-  if (it > length){ return 0 }; //Check if there are any values above the length of the chromosome bby comparing the highest value to the length
+  auto highest = std::max_element(order_.begin(), order_.end()); //Highest == iterator pointing to highest value in order_.
+  if (*highest > length){
+    return 0;
+  } //Check if there are any values above the length of the chromosome by comparing the highest value to the length
 
-  for (i = 0, i != length, i++){
+  for (int i = 0; i != length; i++){
     if (std::count(order_.begin(), order_.end(), i) != 1) { //Check if there are any missing/repeated values
       return 0;
     }
   }
+  return 1;
 }
 
 // Find whether a certain value appears in a given range of the chromosome.
@@ -122,7 +126,3 @@ Chromosome::is_in_range(unsigned value, unsigned begin, unsigned end) const
 {
   // Add your implementation here
 }
-
-
-//Picks a number between a min and max
-std::uniform_int_distribution<int> gen(min, max);
