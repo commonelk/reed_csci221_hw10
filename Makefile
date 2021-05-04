@@ -7,9 +7,6 @@ VPATH=src:inc
 
 all: tsp
 
-chrm_comp_test: chromosome.o
-	$(CXX) $(LDFLAGS) -o $@ $^
-
 tsp: tsp.o chromosome.o deme.o cities.o
 	$(CXX) $(LDFLAGS) -o $@ $^
 
