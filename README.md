@@ -10,7 +10,8 @@
 
 #### **Design Decisions:**
 1. <u>Chromosome class.</u>
-    + Type here.
+    + Since there is more than one fucntion in the Chromosome class where getting two unique indecies to cities is useful, the `two_random_cities()` function was added, which returns two numbers in a pair, randomly chosen from 0 to the number of cities -1.
+    +  There were a few possibilities for implementing `get_fitness()`. In the end, we subtracted the distance returned by `calculate_total_distance()` from the maximum value of a double. 
 2. <u>Deme class.</u>
     + Beyond implementing the algorithms as instructed, the central focus in writing `Deme` involved managing memory and preventing memory leaks. To facilitate this prevention, we use one method and one function, `clean_pop()` and `clean_chrom_pairs_t()`. 
         + `clean_pop()` is used in both the destructor and `compute_next_generation()`; as the name suggests, it unallocates the memory of each `Chromosome*` in `prop_` (and calls `pop_.clear()`). 
