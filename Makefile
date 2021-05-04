@@ -15,3 +15,6 @@ tsp: tsp.o chromosome.o deme.o cities.o
 
 clean:
 	rm -rf *.o tsp
+
+clean_o:
+	rm -rf *.o

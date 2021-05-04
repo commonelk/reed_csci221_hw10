@@ -51,6 +51,10 @@ void Deme::compute_next_generation() {
     std::vector<std::pair<Chromosome*, Chromosome*>> parent_pairs;
     const int pop_size = pop_.size(); // We will be changing pop_ over each iteration.
 
+    // Compute total fitness sum of current generation
+    fitness_sum_ = 0.0;
+    for(Chromosome* chrom : pop_) { fitness_sum_ += chrom -> get_fitness(); }
+
     // Get pairs of parents
     chrom_pair_t parent_pair;
     for(int i = 0; i < pop_size/2; i++) {
@@ -58,6 +62,7 @@ void Deme::compute_next_generation() {
             auto parent = select_parent();
             auto parent_iter = std::find(pop_.begin(), pop_.end(), parent);
             pop_.erase(parent_iter);
+            fitness_sum_ -= parent -> get_fitness(); // Update fitness_sum_ by subtracting selected parent's fitness
             if(j == 0) { parent_pair.first = parent; }
             else if(j == 1) { parent_pair.second = parent; }
         }
@@ -67,20 +72,19 @@ void Deme::compute_next_generation() {
     // Randomly mutate parents based on mut_rate_
     std::uniform_real_distribution<double> distr(0.0, std::nextafter(1.0, DBL_MAX));
     for(chrom_pair_t pair : parent_pairs) {
-        double r1 = distr(generator_), r2 = distr(generator_);
-        if(r1 < mut_rate_) { pair.first -> mutate(); }
-        if(r2 < mut_rate_) { pair.second -> mutate(); }
+        if(distr(generator_) < mut_rate_) { pair.first -> mutate(); }
+        if(distr(generator_) < mut_rate_) { pair.second -> mutate(); }
     }
 
     // Generate new children and create new pop_
-    clean_pop(); // Cleans out any remaining chromosomes that weren't selected as parents (happens if pop_size is odd)
+    clean_pop(); // Cleans out any remaining chromosomes that weren't selected as parents (occurs if pop_size is odd)
     for(chrom_pair_t parent_pair : parent_pairs) {
         auto child_pair = parent_pair.first -> recombine(parent_pair.second);
         pop_.push_back(child_pair.first);
         pop_.push_back(child_pair.second);
     }
     
-    // Lastly, unallocate memory of previous generation Chromosome*
+    // Lastly, unallocate memory of previous generation's Chromosome*
     clean_chrom_pairs_t(parent_pairs);
 }
 
@@ -98,10 +102,9 @@ const Chromosome* Deme::get_best() const {
 // Randomly select a chromosome in the population based on fitness and
 // return a pointer to that chromosome.
 Chromosome* Deme::select_parent() {
-    double fitness_sum = 0.0, partial_sum = 0.0;
-    for(Chromosome* chrom : pop_) { fitness_sum += chrom -> get_fitness(); } // Compute fitness_sum
+    double partial_sum = 0.0;
 
-    std::uniform_real_distribution<double> distr(0.0, std::nextafter(fitness_sum, DBL_MAX));
+    std::uniform_real_distribution<double> distr(0.0, std::nextafter(fitness_sum_, DBL_MAX));
     double r = distr(generator_);
     for(Chromosome* chrom : pop_) {
         partial_sum += chrom -> get_fitness();
